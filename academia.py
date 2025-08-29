@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+
+
 class SRMPortalScraper:
     """Simple SRM Student Portal scraper that returns structured data"""
     
@@ -16,7 +18,7 @@ class SRMPortalScraper:
     async def scrape_data(self) -> dict:
         """Main method to scrape and return all data as dictionary"""
         playwright = await async_playwright().start()
-        browser = await playwright.chromium.launch(headless=False)
+        browser = await playwright.chromium.launch(headless=True)
         page = await browser.new_page(viewport={"width": 1920, "height": 1080})
         
         try:
@@ -47,7 +49,7 @@ class SRMPortalScraper:
             await playwright.stop()
     
     def _parse_all_data(self, html_content: str) -> dict:
-        """Parse all data and return as structured dictionary"""
+        """Parsing   data and returning as structured dictionary"""
         soup = BeautifulSoup(html_content, 'html.parser')
         tables = soup.find_all('table')
         
@@ -178,7 +180,10 @@ class SRMPortalScraper:
         
         return marks
 
-# Simple one-line function
+
+
+
+#calling function
 async def get_srm_data(email: str, password: str) -> dict:
     """Get SRM student data as dictionary"""
     scraper = SRMPortalScraper(email, password)
