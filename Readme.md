@@ -17,10 +17,13 @@ playwright install
 
 
 3. Run:
-    python academia.py
+    python api.py
 
 
 4. Notes:
+
+    academia.py is supporting file containing all the logic
+
     requirements.txt has all required packages.
 
     .env keeps your SRM credentials safe (do not commit).
