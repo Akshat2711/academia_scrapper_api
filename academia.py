@@ -18,7 +18,7 @@ class SRMPortalScraper:
     async def scrape_data(self) -> dict:
         """Main method to scrape and return all data as dictionary"""
         playwright = await async_playwright().start()
-        browser = await playwright.chromium.launch(headless=True)
+        browser = await playwright.chromium.launch(headless=False)
         page = await browser.new_page(viewport={"width": 1920, "height": 1080})
         
         try:
@@ -49,16 +49,23 @@ class SRMPortalScraper:
             await playwright.stop()
     
     def _parse_all_data(self, html_content: str) -> dict:
-        """Parsing   data and returning as structured dictionary"""
         soup = BeautifulSoup(html_content, 'html.parser')
         tables = soup.find_all('table')
+        
+        print(f"[DEBUG] Total tables found: {len(tables)}")
+        for i, t in enumerate(tables):
+            print(f"Table {i} preview: {str(t)[:200]}...\n")  # first 200 chars of each table
+        
+        if len(tables) < 4:
+            raise ValueError("Expected at least 4 tables but found fewer. The page HTML may have changed or login failed.")
         
         return {
             'student_info': self._parse_student_info(tables[1]),
             'attendance': self._parse_attendance(tables[2]),
             'marks': self._parse_marks(tables[3]),
-            'summary': {}  # Will be populated after parsing
+            'summary': {}
         }
+
     
     def _parse_student_info(self, table) -> dict:
         """Parse student basic information"""
